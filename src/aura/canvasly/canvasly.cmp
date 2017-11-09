@@ -1,0 +1,7 @@
+<!--
+ - Created by chshah on 10/24/2017.
+ -->
+
+<aura:component description="canvasly" implements="force:lightningQuickAction,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    <force:canvasApp developerName="canvasly"/>
+</aura:component>

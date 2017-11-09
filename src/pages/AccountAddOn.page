@@ -1,0 +1,63 @@
+<apex:page standardController="Account" >
+    <script type="text/javascript" src="/canvas/sdk/js/41.0/controller.js"/>
+
+    <div style="width: 50%; float:left">
+        Parent VF Page <br/><br/><hr/><br/>
+        <input id="vfPublishMessage" value=""/> <button onclick="vfPublish( document.getElementById('vfPublishMessage').value )" > Publish </button> <br/><br/><hr/><br/>
+        Subcribed Message <div id="vfSubscribed" style="margin-top:10px; font-weight: bold"/> <br/><br/><hr/><br/>
+        Resize Canvas
+        <input id="resizeWidthPx" value="" placeholder="width px"/> &nbsp; &nbsp; <input id="resizeHeightPx" value="" placeholder="height px"/> <button onclick="resizeCanvas( document.getElementById('resizeWidthPx').value, document.getElementById('resizeHeightPx').value )" > Resize Canvas </button> <br/><br/><hr/><br/>
+    </div>
+
+    <div style="width: 50%; float:right">
+        Canvas:
+
+        <apex:canvasApp canvasId="canvaslyId"
+                        applicationName="Canvas App"
+                        developerName="canvasly"
+                        entityFields="*"
+                        scrolling="yes"
+        />
+
+    </div>
+
+    <!-- global variable initialization block -->
+    <script>
+        var namespacePrefix = '';
+        var vfTopic = 'vfTopic';
+        var canvasTopic = 'canvasTopic';
+    </script>
+
+    <!-- VF subscribe to Canvas Topic -->
+    <script>
+        Sfdc.canvas.controller.subscribe([
+            {name : namespacePrefix + canvasTopic, onData : onData }
+        ]);
+        function onData(message) {
+            console.log(' visualforce got mesage from canvas : ' + message );
+            document.getElementById('vfSubscribed').innerHTML = message;
+        }
+        // Sfdc.canvas.controller.unsubscribe([ namespacePrefix + canvasTopic ]);
+    </script>
+
+    <!-- VF publish to VF topic -->
+    <script>
+        function vfPublish( message ) {
+            console.log(' visualforce publishing message ' + message );
+            Sfdc.canvas.controller.publish({name : namespacePrefix + vfTopic ,
+                payload : { "message" : message },
+                target : {canvas : 'canvaslyId'}
+            });
+        }
+    </script>
+
+    <!-- resize block -->
+    <script>
+        function resizeCanvas(width, height) {
+            var target = {canvas : "canvaslyId"};
+            console.log( ' visualforce trying to resize canvas ');
+            Sfdc.canvas.controller.resize( {height : "1000px", width : "900px"}, target);
+        }
+    </script>
+
+</apex:page>
